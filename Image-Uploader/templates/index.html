@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Uploader</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.css"
+    />
+    <link rel="stylesheet" href="../static/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+    />
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="editor-container">
+        <div class="image-container">
+          <video id="video" autoplay="true"></video>
+          <img id="image" style="display: none" />
+        </div>
+        <div class="icon-container">
+          <i id="upload-icon" class="fas fa-upload"></i>
+          <i id="camera-icon" class="fas fa-camera"></i>
+          <i id="image-icon" class="fas fa-image"></i>
+        </div>
+        <div class="options-btn hide">
+          <i class="fas fa-times" id="cancel-icon"></i>
+          <button id="rotate-left">
+            <img src="../static/rotate-left.png" />
+          </button>
+          <button id="rotate-right">
+            <img src="../static/rotate-right.png" />
+          </button>
+          <button id="scale-X-button">
+            <img src="../static/flip-hori.png" />
+          </button>
+          <i class="fas fa-check" id="accept-icon"></i>
+        </div>
+        <div class="action-btns">
+          <a href="" id="download" class="hide">Download</a>
+        </div>
+      </div>
+      <div id="preview-container" class="preview-container">
+        <div id="preview-slider"></div>
+      </div>
+    </div>
+    <!-- The Modal -->
+    <div id="uploadModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <input
+          type="text"
+          id="modal-input-field"
+          placeholder="Enter file name"
+        />
+        <button id="modal-upload-btn">Upload</button>
+      </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script src="../static/script.js"></script>
+  </body>
+</html>
