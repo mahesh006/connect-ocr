@@ -12,4 +12,4 @@ Detailing the core functionalities:
 
 (1) OCR Optimization: Leveraging Azure Document Analyzer for advanced processing of KYC and tabular data. (2) Cloud Storage: Firebase-based secure storage for both images and their processed results. (3) Image Upload: A PWA for direct uploading of images from mobile devices.
 
-Demo: https://youtu.be/zb_Gi2Xwa8o
+Demo: https://youtu.be/zLB3sfggm2g
