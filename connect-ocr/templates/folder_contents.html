@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Connect-OCR</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: proxima-nova, Open Sans, Helvetica, Arial, sans-serif;
+      }
+
+      ::-webkit-scrollbar {
+        width: 5px;
+        height: 0.6rem;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+        min-height: 50px;
+      }
+
+      /* Handle on hover */
+      ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+
+      .container {
+        overflow-x: scroll;
+        background-color: lightgrey;
+        width: 100%;
+        scrollbar-width: thin; /* For Firefox */
+        scrollbar-color: #888 #f1f1f1; /* For Firefox */
+      }
+
+      .scrolling-list {
+        display: flex;
+        flex-wrap: nowrap;
+        padding: 6px;
+        width: auto;
+        background-color: lightgray;
+      }
+
+      .scrolling-list img {
+        flex: 0 0 auto;
+        max-width: 150px;
+        max-height: 140px;
+        margin-right: 10px;
+        cursor: pointer;
+        background-color: lightgrey;
+      }
+
+      .preview-section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 66vh;
+        width: 30vw;
+        margin-bottom: 20px;
+        background-color: lightgray;
+      }
+
+      .preview-section img {
+        max-width: 100%;
+        height: auto;
+        max-height: 100%;
+      }
+
+      .main-content {
+        width: 30vw;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+        height: 100%;
+      }
+
+      .custom {
+        width: 60vw;
+      }
+
+      .parent {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .card {
+        background-color: white;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 5px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-buttons {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .left-content {
+        display: flex;
+        align-items: center;
+      }
+
+      .right-content {
+        display: flex;
+        align-items: center;
+      }
+
+      .left-content > *,
+      .right-content > * {
+        margin-right: 10px;
+        font-weight: bold;
+      }
+
+      .card-buttons button,
+      .custom-card-item button {
+        width: auto;
+        padding: 10px;
+        margin: 5px;
+        border: none;
+        border-radius: 5px;
+        background-color: #008cba;
+        color: white;
+        cursor: pointer;
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      .card-buttons button:hover,
+      .custom-card-item button:hover {
+        background-color: #007b9a;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .card-buttons button:disabled,
+      .custom-card-item button:disabled {
+        background-color: #ccc;
+        color: #888;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+
+      .language-dropdown {
+        width: 150px;
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        font-size: 0.95rem;
+        background-color: #f0f0f0;
+        color: #333;
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .language-dropdown:hover {
+        background-color: #e6e6e6;
+      }
+
+      .language-dropdown:focus {
+        border: none;
+        outline: none;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .language-dropdown option {
+        background-color: #f0f0f0;
+        color: #333;
+      }
+
+      .active {
+        border: 3px solid #008cba;
+      }
+      .custom-card-container {
+        display: flex;
+        flex-direction: column;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .card.original-card,
+      .card.custom-card {
+        height: 100%;
+        display: none;
+      }
+
+      .card.original-card.visible,
+      .card.custom-card.visible {
+        display: block;
+      }
+
+      .todo-list {
+        list-style-type: none;
+        padding-left: 0;
+        max-height: 60vh;
+        overflow-y: auto;
+        border-radius: 5px;
+        padding: 15px;
+      }
+
+      .todo-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+        background-color: #f0f0f0;
+        margin-bottom: 15px;
+        border-radius: 5px;
+      }
+
+      .todo-item label {
+        flex-grow: 1;
+        margin-left: 10px;
+        font-weight: bold;
+      }
+
+      .delete-todo {
+        cursor: pointer;
+        color: #ff4a4a;
+      }
+
+      .delete-todo:hover {
+        color: #ff0000;
+      }
+
+      .add-todo-container {
+        display: flex;
+        margin-top: 10px;
+        align-items: center;
+        padding: 15px;
+      }
+
+      .add-todo-input {
+        flex-grow: 1;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-right: 10px;
+        font-size: 1rem;
+      }
+
+      .add-todo-button {
+        padding: 8px 16px;
+        background-color: #008cba;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1rem;
+      }
+
+      .add-todo-button:hover {
+        background-color: #007b9a;
+      }
+      .image-card {
+        background-color: white;
+        border-radius: 5px;
+        padding: 10px;
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .image-card button {
+        width: auto;
+        padding: 10px;
+        margin: 5px;
+        border: none;
+        border-radius: 5px;
+        background-color: #008cba;
+        color: white;
+        cursor: pointer;
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+        font-weight: bold;
+      }
+
+      .image-card button:hover {
+        background-color: #007b9a; /* Darker blue on hover */
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .image-card p {
+        padding: 5px 0;
+        color: #333;
+        font-size: 1rem;
+      }
+
+      .custom-card-item {
+        background-color: white;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .custom-card-item h4 {
+        padding: 5px 0;
+        color: #333;
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+
+      .custom-card-item p {
+        padding: 5px 0;
+        color: #333;
+        font-size: 1rem;
+      }
+      #spinner {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #008cba;
+        font-size: 2em;
+      }
+      #modelDropdown {
+        height: 35px;
+        border: 2px solid #f8b24f;
+        border-radius: 5px;
+        padding: 5px;
+        background-color: #f0f0f0;
+        font-size: 16px;
+      }
+
+      #modelDropdown:hover {
+        border-color: #e88a1a;
+      }
+
+      #modelDropdown:focus {
+        outline: none;
+      }
+
+      #modelDropdown option {
+        font-weight: bold;
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div id="spinner" style="display: none">
+      <i class="fas fa-spinner fa-spin"></i>
+    </div>
+
+    <div class="parent">
+      <div class="main-content">
+        <div class="preview-section">
+          <img
+            id="preview-image"
+            src="../static/preview.jpg"
+            alt="Preview Image"
+          />
+        </div>
+        <div class="container">
+          <div class="scrolling-list">
+            {% for file in files %}
+            <img src="{{ file.url }}" alt="{{ file.name }}" />
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <div class="custom">
+        <div class="card">
+          <div class="card-buttons">
+            <div class="left-content">
+              <button class="original-button">Original</button>
+              <button class="custom-button">Custom</button>
+              <select class="language-dropdown">
+                <option value="English" selected>English</option>
+                <option value="Spanish">Spanish</option>
+                <option value="French">French</option>
+                <option value="German">German</option>
+                <option value="Italian">Italian</option>
+                <option value="Dutch">Dutch</option>
+                <option value="Portuguese">Portuguese</option>
+                <option value="Chinese Simplified">Chinese Simplified</option>
+                <option value="Chinese Traditional">Chinese Traditional</option>
+                <option value="Japanese">Japanese</option>
+                <option value="Korean">Korean</option>
+                <option value="Russian">Russian</option>
+              </select>
+              <select
+                id="modelDropdown"
+                class="model-dropdown"
+                style="margin-right: 10px"
+                onchange="toggleButton(this)"
+              >
+                <option value="Documents">Documents</option>
+                <option value="Tables">Tables</option>
+              </select>
+              <i
+                id="reloadIcon"
+                class="fas fa-rotate"
+                style="
+                  font-size: 20px;
+                  color: #5a9;
+                  cursor: pointer;
+                  margin-right: 10px;
+                "
+              ></i>
+            </div>
+            <div class="right-content">
+              <input
+                class="select-all-checkbox"
+                type="checkbox"
+                id="select-all"
+                name="select-all"
+              />
+              <label for="select-all">Select All</label>
+              <button class="analyze-button">Analyze</button>
+            </div>
+          </div>
+        </div>
+        <div class="custom-card-container">
+          <div class="card original-card visible">
+            <!-- Content for Original Card -->
+          </div>
+
+          <div class="card custom-card">
+            <!-- Content for Custom Card -->
+            <div class="add-todo-container">
+              <input
+                class="add-todo-input"
+                type="text"
+                placeholder="Enter Field Name"
+              />
+              <button class="add-todo-button">Add</button>
+            </div>
+            <div class="todo-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const images = document.querySelectorAll(".scrolling-list img");
+      const previewImage = document.getElementById("preview-image");
+      const selectAllCheckbox = document.querySelector(".select-all-checkbox");
+      const analyzeButton = document.querySelector(".analyze-button");
+      const originalButton = document.querySelector(".original-button");
+      const customButton = document.querySelector(".custom-button");
+      const originalCard = document.querySelector(".original-card");
+      const customCard = document.querySelector(".custom-card");
+      const addTodoInput = document.querySelector(".add-todo-input");
+      const addTodoButton = document.querySelector(".add-todo-button");
+      const todoList = document.querySelector(".todo-list");
+      const leftContent = document.querySelector(".left-content");
+      const modelDropdown = document.getElementById("modelDropdown");
+
+      function toggleButton(select) {
+        // if 'text' is selected, disable the button
+        if (select.value === "Tables") {
+          customButton.disabled = true;
+        } else {
+          customButton.disabled = false;
+        }
+      }
+
+      document
+        .getElementById("reloadIcon")
+        .addEventListener("click", function () {
+          location.reload(); // reload the page
+        });
+
+      // Add todo item to the list
+      addTodoButton.addEventListener("click", () => {
+        const todoText = addTodoInput.value.trim();
+
+        if (todoText !== "") {
+          const todoItem = createTodoItem(todoText);
+          todoList.appendChild(todoItem);
+          addTodoInput.value = "";
+        }
+      });
+
+      function createTodoItem(todoText) {
+        const todoItem = document.createElement("li");
+        todoItem.classList.add("todo-item");
+
+        const label = document.createElement("label");
+        label.textContent = todoText;
+        todoItem.appendChild(label);
+
+        const deleteIcon = document.createElement("span");
+        deleteIcon.classList.add("delete-todo");
+        deleteIcon.innerHTML = '<i class="fas fa-trash-alt"></i>';
+        deleteIcon.addEventListener("click", function () {
+          todoItem.remove();
+        });
+        todoItem.appendChild(deleteIcon);
+
+        return todoItem;
+      }
+
+      // Show original card and hide custom card by default
+      originalCard.classList.add("visible");
+      customCard.classList.remove("visible");
+
+      // Original button click event listener
+      originalButton.addEventListener("click", () => {
+        originalCard.classList.add("visible");
+        customCard.classList.remove("visible");
+      });
+
+      // Custom button click event listener
+      customButton.addEventListener("click", () => {
+        originalCard.classList.remove("visible");
+        customCard.classList.add("visible");
+      });
+
+      let selectedImages = [];
+
+      // Highlight a selected image and add its URL to the selectedImages array
+      images.forEach((image) => {
+        image.addEventListener("click", (event) => {
+          const imageUrl = event.target.getAttribute("src");
+
+          // Remove 'active' class from all images
+          images.forEach((img) => {
+            img.classList.remove("active");
+          });
+
+          // Clear selectedImages array
+          selectedImages = [];
+
+          // Add 'active' class to clicked image and add its URL to selectedImages array
+          event.target.classList.add("active");
+          selectedImages.push(imageUrl);
+
+          previewImage.setAttribute("src", imageUrl);
+
+          // Uncheck the selectAllCheckbox
+          selectAllCheckbox.checked = false;
+        });
+      });
+
+      // Select all images when the checkbox is checked
+      selectAllCheckbox.addEventListener("change", (event) => {
+        if (event.target.checked) {
+          images.forEach((image) => {
+            if (!image.classList.contains("active")) {
+              image.classList.add("active");
+              selectedImages.push(image.getAttribute("src"));
+            }
+          });
+        } else {
+          images.forEach((image) => {
+            if (image.classList.contains("active")) {
+              image.classList.remove("active");
+              const imageIndex = selectedImages.indexOf(
+                image.getAttribute("src")
+              );
+              if (imageIndex !== -1) selectedImages.splice(imageIndex, 1);
+            }
+          });
+        }
+      });
+
+      const languageDropdown = document.querySelector(".language-dropdown");
+      const spinner = document.getElementById("spinner");
+
+      analyzeButton.addEventListener("click", () => {
+        spinner.style.display = "block";
+
+        const selectedLanguage = languageDropdown.value;
+        const selectedModel = modelDropdown.value; // New line
+
+        let todos = Array.from(todoList.children).map(
+          (todoItem) => todoItem.querySelector("label").textContent
+        );
+
+        let requestData = {
+          images: selectedImages,
+          language: selectedLanguage,
+          model: selectedModel,
+        };
+
+        if (todos.length) {
+          requestData.todos = todos;
+        }
+
+        fetch("/analyze", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestData),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            spinner.style.display = "none";
+            // Clear the contents of the original and custom cards
+            customButton.disabled = false;
+
+            originalCard.innerHTML = "";
+            customCard.innerHTML = "";
+
+            // Iterate through the response data
+            data.forEach((item, index) => {
+              // Create a new div for each image and raw_results pair
+              const imageCard = document.createElement("div");
+              imageCard.classList.add("image-card");
+
+              // Add a button that says "Show Image" only if there is more than one item in data
+              if (data.length > 1) {
+                const button = document.createElement("button");
+                button.textContent = "Show Image";
+                button.addEventListener("click", () => {
+                  previewImage.src = item.image_url;
+                });
+                imageCard.appendChild(button);
+              }
+
+              // Add a p element for the whole_results
+              //for (const key in item.whole_results) {
+              //  const p = document.createElement("p");
+              //  p.textContent = `${key}: ${item.whole_results[key]}`;
+              //  imageCard.appendChild(p);
+              //}
+
+              // Add a p element for the raw_results
+              //const p = document.createElement("p");
+              //p.textContent = `Raw Results: ${item.raw_results}`;
+              //imageCard.appendChild(p);
+              const p = document.createElement("p");
+              p.textContent = `Raw Results: ${item.raw_results}`;
+              p.style.whiteSpace = "pre-wrap";
+              imageCard.appendChild(p);
+
+              // Append the new imageCard to the originalCard
+              originalCard.appendChild(imageCard);
+
+              // Create a new div for each results object and display it in a custom card
+              const customCardItem = document.createElement("div");
+              customCardItem.classList.add("custom-card-item");
+
+              // Check if item.results has at least one key
+              if (Object.keys(item.results).length > 0) {
+                let savedFilesButton = document.querySelector(
+                  ".left-content #savedFilesButton"
+                );
+
+                // If it doesn't exist, create and append it
+                if (!savedFilesButton) {
+                  savedFilesButton = document.createElement("button");
+                  savedFilesButton.id = "savedFilesButton";
+                  savedFilesButton.textContent = "Saved Files";
+                  savedFilesButton.addEventListener("click", function () {
+                    window.open("/saved_files", "_blank");
+                  });
+
+                  leftContent.appendChild(savedFilesButton);
+                }
+                // Create cards if item.results has at least one key
+
+                const customCardItem = document.createElement("div");
+                customCardItem.classList.add("custom-card-item");
+
+                // Add a button to show image in the custom card if there is more than one item in data
+                if (data.length > 1) {
+                  const button = document.createElement("button");
+                  button.textContent = "Show Image";
+                  button.addEventListener("click", () => {
+                    previewImage.src = item.image_url;
+                  });
+                  customCardItem.appendChild(button);
+                }
+
+                // Add a h4 element for the header
+                const h4 = document.createElement("h4");
+                h4.textContent = `Image ${index + 1} Results`;
+                customCardItem.appendChild(h4);
+
+                // Iterate through the results object
+                for (const key in item.results) {
+                  // Create a p element for each key in results, even if its value is null or undefined
+                  const p = document.createElement("p");
+                  p.textContent = `${key}: ${
+                    item.results[key] ? item.results[key] : "No Value"
+                  }`;
+                  customCardItem.appendChild(p);
+                }
+
+                // Append the new customCardItem to the customCard
+                customCard.appendChild(customCardItem);
+              } else {
+                // Do nothing or display a message when there's no data in item.results
+                console.log(`No data in results for image ${index + 1}.`);
+              }
+            });
+          })
+          .catch((error) => {
+            spinner.style.display = "none";
+            console.error("Error:", error);
+          });
+      });
+    </script>
+  </body>
+</html>

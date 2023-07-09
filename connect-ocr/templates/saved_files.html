@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Saved Files</title>
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    />
+
+    <style>
+      body {
+        background-color: #f4f4f4;
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        max-width: 1200px;
+        margin: auto;
+      }
+      h1 {
+        color: #6c63ff;
+        text-align: left;
+        padding: 30px 0;
+        font-size: 1.4rem;
+        font-weight: bold;
+      }
+      .card {
+        background-color: #fff;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.15);
+        margin-bottom: 30px;
+        transition: all 0.15s ease-in-out;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+      }
+      .card:hover {
+        transform: scale(1.03);
+      }
+      .file-icon {
+        font-size: 8rem;
+        color: #6c63ff;
+      }
+      .file-name {
+        font-size: 0.8rem;
+      }
+      .btn-container {
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+      }
+      .btn {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.5rem;
+        line-height: 1;
+      }
+      .card-title {
+        margin-bottom: 0.5rem;
+        margin-top: 0.3rem;
+      }
+      .btn-download {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        transition: all 0.15s ease-in-out;
+      }
+
+      .btn-download:hover {
+        background-color: #45a049;
+      }
+
+      .btn-delete {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        transition: all 0.15s ease-in-out;
+      }
+
+      .btn-delete:hover {
+        background-color: #da190b;
+      }
+
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        overflow: hidden;
+        background: linear-gradient(to right, #536976, #292e49);
+        transition: background-color 0.5s ease;
+        padding: 22px 10px;
+      }
+
+      .navbar a {
+        color: #f2f2f2;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 17px;
+        transition: color 0.5s ease, background-color 0.5s ease,
+          transform 0.5s ease;
+      }
+
+      .navbar a:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        transform: scale(1.1);
+      }
+
+      .navbar a.active {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: white;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="navbar">
+      <div>
+        <a class="active" href="">Saved Files</a>
+        <a href="/dashboard">Dashboard</a>
+      </div>
+      <div>
+        <a href="">Welcome, {{ email }}</a>
+        <a href="/logout">Logout</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Saved Files</h1>
+
+      <div class="row">
+        {% for file in files %}
+        <div class="col-lg-2 col-md-6 col-sm-6">
+          <div class="card">
+            <i class="fas fa-file-csv file-icon"></i>
+
+            <h5 class="card-title file-name">{{ file.name }}</h5>
+            <div class="btn-container">
+              <a href="{{ file.url }}" target="_blank" class="btn btn-download">
+                <i class="fas fa-download"></i>
+              </a>
+              <form
+                action="{{ url_for('delete_analysis_result') }}"
+                method="POST"
+              >
+                <input type="hidden" name="file_id" value="{{ file.id }}" />
+                <input type="hidden" name="file_name" value="{{ file.name }}" />
+                <button type="submit" class="btn btn-delete">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <a
+        href="{{ url_for('dashboard') }}"
+        class="btn btn-primary"
+        style="margin-top: 30px"
+      >
+        Go Back to Dashboard
+      </a>
+    </div>
+  </body>
+</html>

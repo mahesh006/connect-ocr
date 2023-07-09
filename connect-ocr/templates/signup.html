@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sign Up</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .signup-container {
+        width: 300px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        position: relative;
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+        margin-top: 0;
+      }
+
+      form {
+        margin-top: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+      }
+
+      input[type="email"],
+      input[type="password"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+
+      input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      input[type="submit"]:hover {
+        background-color: #45a049;
+      }
+
+      p.error {
+        color: red;
+        text-align: center;
+        margin-top: 10px;
+      }
+
+      /* Animation Keyframes */
+      @keyframes fade-in {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slide-in {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+
+      /* Animations */
+      .fade-in {
+        animation: fade-in 0.8s ease-out;
+      }
+
+      .slide-in {
+        animation: slide-in 0.8s ease-out;
+      }
+
+      /* Link Styles */
+      .login-link {
+        text-align: center;
+        margin-top: 10px;
+      }
+
+      .login-link a {
+        color: #333;
+        text-decoration: underline;
+        transition: color 0.3s;
+      }
+
+      .login-link a:hover {
+        color: #4caf50;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="signup-container fade-in">
+      <h1>Sign Up</h1>
+      {% if error %}
+      <p class="error">{{ error }}</p>
+      {% endif %}
+      <form method="POST" action="/signup">
+        <label>Email:</label>
+        <input type="email" name="email" required />
+        <br />
+        <br />
+        <label>Password:</label>
+        <input type="password" name="password" required />
+        <br />
+        <br />
+        <input type="submit" value="Sign Up" class="slide-in" />
+      </form>
+      <div class="login-link">
+        <a href="/login">signin to existing account</a>
+      </div>
+    </div>
+  </body>
+</html>
